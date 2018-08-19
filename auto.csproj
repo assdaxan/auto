@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="OpenCvSharp">
+      <HintPath>net46/OpenCvSharp.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>
