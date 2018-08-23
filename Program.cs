@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows;
@@ -13,24 +14,51 @@ namespace auto{
         static extern int SetCursorPos(int x, int y);
         [DllImport("user32.dll")]
         static extern void mouse_event(int dwFlags, int dx, int dy, int dwData, int dwExtraInfo);
+        [DllImport("user32.dll")]
+        static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+        [DllImport("user32.dll")]
+        static extern IntPtr GetWindow(IntPtr hWnd, int wCmd);
+        [DllImport("user32.dll")]
+        static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString,int nMaxCount);
+
         // Win API에서 사용되는 변수 정의
-        const int MOUSEEVENTF_LEFTDOWN = 0x0002;
+        // mouse_event
+        const int MOUSEEVENTF_LEFTDOWN = 0x2;
         const int MOUSEEVENTF_ABSOLUTE = 0x8000;
-        const int MOUSEEVENTF_LEFTUP = 0x0004;
-        const int MOUSEEVENTF_MIDDLEDOWN = 0x0020;
-        const int MOUSEEVENTF_MIDDLEUP = 0x0040;
-        const int MOUSEEVENTF_MOVE = 0x0001;
-        const int MOUSEEVENTF_RIGHTDOWN = 0x0008;
-        const int MOUSEEVENTF_RIGHTUP = 0x0010;
-        const int MOUSEEVENTF_XDOWN = 0x0080;
-        const int MOUSEEVENTF_XUP = 0x0100;
-        const int MOUSEEVENTF_WHEEL = 0x0800;
-        const int MOUSEEVENTF_HWHEEL = 0x01000;
+        const int MOUSEEVENTF_LEFTUP = 0x4;
+        const int MOUSEEVENTF_MIDDLEDOWN = 0x20;
+        const int MOUSEEVENTF_MIDDLEUP = 0x40;
+        const int MOUSEEVENTF_MOVE = 0x1;
+        const int MOUSEEVENTF_RIGHTDOWN = 0x8;
+        const int MOUSEEVENTF_RIGHTUP = 0x10;
+        const int MOUSEEVENTF_XDOWN = 0x80;
+        const int MOUSEEVENTF_XUP = 0x100;
+        const int MOUSEEVENTF_WHEEL = 0x800;
+        const int MOUSEEVENTF_HWHEEL = 0x1000;
+        // GetWindow
+        const int GW_CHILD = 0x5;
+        const int GW_ENABLEDPOPUP = 0x6;
+        const int GW_HWNDFIRST = 0x0;
+        const int GW_HWNDLAST = 0x1;
+        const int GW_HWNDNEXT = 0x2;
+        const int GW_HWNDPREV = 0x3;
+        const int GW_OWNER = 0x4;
 
         static void Main(string[] args){
-            Console.WriteLine("Hello World!");
-            Bitmap target = loadImg(@"C:\Users\Administrator\Desktop\target.PNG");
-            searchImg(target);
+            Console.WriteLine("UBUN Image Auto");
+            using (Bitmap target = loadImg(@"C:\Users\Administrator\Desktop\target.PNG"))
+                searchImg(target);
+        }
+        public static IntPtr findHwnd(string targetName){
+            StringBuilder s = new StringBuilder(256);
+            IntPtr hwnd = FindWindow(null, null);
+            while(hwnd != IntPtr.Zero){
+                GetWindowText(hwnd, s, 256);
+                if(s.ToString().Equals(targetName))
+                    break;
+                hwnd = GetWindow(hwnd, GW_HWNDNEXT);
+            }
+            return hwnd;
         }
         public static Bitmap loadImg(string path){
             return new Bitmap(path);
@@ -43,16 +71,14 @@ namespace auto{
             // 화면 크기만큼의 Bitmap 생성
             Bitmap bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
             // Bitmap 이미지 변경을 위해 Graphics 객체 생성
-            using(Graphics gr = Graphics.FromImage(bmp))
-            {
+            using(Graphics gr = Graphics.FromImage(bmp)){
                 // 화면을 그대로 카피해서 Bitmap 메모리에 저장
                 gr.CopyFromScreen(0, 0, 0, 0, bmp.Size);
             }
             return bmp;
         }
         public static void searchImg(Bitmap find_img){
-            Bitmap screen_img = ScreenCopy();
-
+            using (Bitmap screen_img = ScreenCopy())
             using (Mat ScreenMat = BitmapConverter.ToMat(screen_img))
             using (Mat FindMat = BitmapConverter.ToMat(find_img))
             //스크린 이미지에서 FindMat 이미지를 찾습니다.
@@ -68,8 +94,7 @@ namespace auto{
                     int height = find_img.Size.Height;
                     //이미지의 중앙을 누름니다.
                     click(maxloc.X+(width/2), maxloc.Y+(height/2));
-                    string s = string.Format("{0} {1}", maxloc.X, maxloc.Y);
-                    Console.WriteLine(s);
+                    Console.WriteLine($"{maxloc.X}, {maxloc.Y}");
                 }
             }
         }
