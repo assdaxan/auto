@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows;
+using System.Runtime.InteropServices;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using OpenCvSharp.Blob;
@@ -11,6 +12,12 @@ namespace auto
 {
     class Program
     {
+        [DllImport("user32.dll")]
+        static extern int SetCursorPos(int x, int y);
+        [DllImport("user32.dll")]
+        static extern void mouse_event(int dwFlags, int dx, int dy, int dwData, int dwExtraInfo);
+        public const int MOUSEEVENTF_LEFTDOWN = 2;
+        public const int MOUSEEVENTF_LEFTUP = 4;
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
@@ -54,7 +61,19 @@ namespace auto
                 //찾은 이미지의 유사도 및 위치 값을 받습니다. 
                 Cv2.MinMaxLoc(res, out minval, out maxval, out minloc, out maxloc);
                 Console.WriteLine("찾은 이미지의 유사도 : " + maxval);
+                if (maxval > 0.7){
+                    int width = find_img.Size.Width;
+                    int height = find_img.Size.Height;
+                    click(maxloc.X+(width/2), maxloc.Y+(height/2));
+                    string s = string.Format("{0} {1}", maxloc.X, maxloc.Y);
+                    Console.WriteLine(s);
+                }
             }
+        }
+        public static void click(int x, int y){
+            SetCursorPos(x, y);
+            mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
+            mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
         }
     }
 }
