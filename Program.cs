@@ -12,12 +12,15 @@ namespace auto
 {
     class Program
     {
+        // Win API 정의
         [DllImport("user32.dll")]
         static extern int SetCursorPos(int x, int y);
         [DllImport("user32.dll")]
         static extern void mouse_event(int dwFlags, int dx, int dy, int dwData, int dwExtraInfo);
+        // 마우스 이벤트에서 사용되는 변수 정의
         public const int MOUSEEVENTF_LEFTDOWN = 2;
         public const int MOUSEEVENTF_LEFTUP = 4;
+
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
