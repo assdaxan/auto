@@ -5,35 +5,37 @@ using System.Windows;
 using System.Runtime.InteropServices;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
-using OpenCvSharp.Blob;
-using OpenCvSharp.UserInterface;
 
-namespace auto
-{
-    class Program
-    {
+namespace auto{
+    class Program{
         // Win API 정의
         [DllImport("user32.dll")]
         static extern int SetCursorPos(int x, int y);
         [DllImport("user32.dll")]
         static extern void mouse_event(int dwFlags, int dx, int dy, int dwData, int dwExtraInfo);
-        // 마우스 이벤트에서 사용되는 변수 정의
-        public const int MOUSEEVENTF_LEFTDOWN = 2;
-        public const int MOUSEEVENTF_LEFTUP = 4;
+        // Win API에서 사용되는 변수 정의
+        const int MOUSEEVENTF_LEFTDOWN = 0x0002;
+        const int MOUSEEVENTF_ABSOLUTE = 0x8000;
+        const int MOUSEEVENTF_LEFTUP = 0x0004;
+        const int MOUSEEVENTF_MIDDLEDOWN = 0x0020;
+        const int MOUSEEVENTF_MIDDLEUP = 0x0040;
+        const int MOUSEEVENTF_MOVE = 0x0001;
+        const int MOUSEEVENTF_RIGHTDOWN = 0x0008;
+        const int MOUSEEVENTF_RIGHTUP = 0x0010;
+        const int MOUSEEVENTF_XDOWN = 0x0080;
+        const int MOUSEEVENTF_XUP = 0x0100;
+        const int MOUSEEVENTF_WHEEL = 0x0800;
+        const int MOUSEEVENTF_HWHEEL = 0x01000;
 
-        static void Main(string[] args)
-        {
+        static void Main(string[] args){
             Console.WriteLine("Hello World!");
-            Bitmap screen = ScreenCopy();
-            Bitmap target = loadImg();
-            searchIMG(screen, target);
+            Bitmap target = loadImg(@"C:\Users\Administrator\Desktop\target.PNG");
+            searchImg(target);
         }
-        public static Bitmap loadImg()
-        {
-            return new Bitmap(@"C:\Users\Administrator\Desktop\target.PNG");
+        public static Bitmap loadImg(string path){
+            return new Bitmap(path);
         }
-        public static Bitmap ScreenCopy()
-        {
+        public static Bitmap ScreenCopy(){
             // 주화면의 크기 정보 읽기
             int width = (int)SystemParameters.PrimaryScreenWidth;
             int height = (int)SystemParameters.PrimaryScreenHeight;
@@ -48,25 +50,23 @@ namespace auto
             }
             return bmp;
         }
-        public static void searchIMG(Bitmap screen_img, Bitmap find_img)
-        {
-            //스크린 이미지 선언
+        public static void searchImg(Bitmap find_img){
+            Bitmap screen_img = ScreenCopy();
+
             using (Mat ScreenMat = BitmapConverter.ToMat(screen_img))
-            //찾을 이미지 선언
             using (Mat FindMat = BitmapConverter.ToMat(find_img))
-            //스크린 이미지에서 FindMat 이미지를 찾아라
-            using (Mat res = ScreenMat.MatchTemplate(FindMat, TemplateMatchModes.CCoeffNormed))
-            {
-                //찾은 이미지의 유사도를 담을 더블형 최대 최소 값을 선언합니다.
+            //스크린 이미지에서 FindMat 이미지를 찾습니다.
+            using (Mat res = ScreenMat.MatchTemplate(FindMat, TemplateMatchModes.CCoeffNormed)){
                 double minval, maxval = 0;
-                //찾은 이미지의 위치를 담을 포인트형을 선업합니다.
                 OpenCvSharp.Point minloc, maxloc;
                 //찾은 이미지의 유사도 및 위치 값을 받습니다. 
                 Cv2.MinMaxLoc(res, out minval, out maxval, out minloc, out maxloc);
                 Console.WriteLine("찾은 이미지의 유사도 : " + maxval);
+                //유사도를 0.7 초과로 설정합니다.
                 if (maxval > 0.7){
                     int width = find_img.Size.Width;
                     int height = find_img.Size.Height;
+                    //이미지의 중앙을 누름니다.
                     click(maxloc.X+(width/2), maxloc.Y+(height/2));
                     string s = string.Format("{0} {1}", maxloc.X, maxloc.Y);
                     Console.WriteLine(s);
