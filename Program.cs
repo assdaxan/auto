@@ -11,6 +11,7 @@ namespace auto
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
+            ScreenCopy();
             //screenshot();
             //Bitmap bigbmp = new Bitmap(@"C:\Users\Administrator\Desktop\i.bmp");
         }
@@ -33,15 +34,5 @@ namespace auto
                 bmp.Save("test.png", ImageFormat.Png);
             }
         }
-        // static void screenshot(){
-        //     Rectangle rect = Screen.PrimaryScreen.Bounds;
-
-        //     using (Bitmap bmp = new Bitmap(rect.Width, rect.Height, PixelFormat.Format24bppRgb)){
-        //         using (Graphics gr = Graphics.FromImage(bmp)){
-        //             gr.CopyFromScreen(0, 0, 0, 0, bmp.Size);
-        //         }
-        //         bmp.Save(@"i.bmp");
-        //     }
-        // }
     }
 }
