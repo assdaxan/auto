@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Text;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -14,8 +15,7 @@ namespace auto{
     class Program : WinApi{        
         static void Main(string[] args){
             Console.WriteLine("UBUN Image Auto");
-            HWND h = getHwndFromCaption("제목 없음 - 메모장");
-
+            a();
             // using (Bitmap target = loadImg(@"C:\Users\Administrator\Desktop\target.PNG")){
             //     OpenCvSharp.Point p = searchImg(target);
             //     if(p.X != -1 && p.Y != -1){
@@ -25,9 +25,22 @@ namespace auto{
             //     }
             // }
         }
+        static void a(){
+            PROCESSENTRY32 procEntry = new PROCESSENTRY32();
+            procEntry.dwSize = (UInt32)Marshal.SizeOf(typeof(PROCESSENTRY32));
+            HANDLE handleToSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+            if (Process32First(handleToSnapshot, ref procEntry)){
+                do{
+                    Console.WriteLine($"PPID : {procEntry.th32ParentProcessID} PID : {procEntry.th32ProcessID} Name : {procEntry.szExeFile}");
+                }while(Process32Next(handleToSnapshot, ref procEntry));
+            }
+        }
+        static HANDLE getHandleFromPid(int pid){
+            HANDLE handle = OpenProcess(PROCESS_ALL_ACCESS, false, pid);
+            return handle;
+        }
         static int getPidFromHwnd(HWND hwnd){
-            int a = 0;
-            GetWindowThreadProcessId(hwnd, out a);
+            GetWindowThreadProcessId(hwnd, out int a);
             return a;
         }
         static HWND getHwndFromCaption(string targetName){
@@ -40,6 +53,11 @@ namespace auto{
                 hwnd = GetWindow(hwnd, GW_HWNDNEXT);
             }
             return hwnd;
+        }
+        static bool invaildPoint(OpenCvSharp.Point p){
+            if (p.X != -1 && p.Y != -1)
+                return true;
+            return false;
         }
         static Bitmap loadImg(string path){
             return new Bitmap(path);
@@ -69,10 +87,8 @@ namespace auto{
                 //찾은 이미지의 유사도 및 위치 값을 받습니다. 
                 Cv2.MinMaxLoc(res, out minval, out maxval, out minloc, out maxloc);
                 Console.WriteLine(maxloc);
-                Console.WriteLine("찾은 이미지의 유사도 : " + maxval);
                 //유사도를 0.7 초과로 설정합니다.
                 if (maxval > 0.7){
-                    Console.WriteLine($"{maxloc.X}, {maxloc.Y}");
                     return maxloc;
                 }
             }
