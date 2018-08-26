@@ -5,7 +5,7 @@ using HWND = System.IntPtr;
 using HANDLE = System.IntPtr;
 using HMODULE = System.IntPtr;
 
-namespace auto{
+namespace Auto{
     public class WinApi{
         // Win API 정의
         [DllImport("user32.dll")]
@@ -25,7 +25,7 @@ namespace auto{
         [DllImport("psapi.dll")]
         protected static extern int GetModuleBaseName(HANDLE hProcess, HMODULE hModule, StringBuilder lpBaseName, int nSize);
         [DllImport("kernel32.dll")]
-        protected static extern HANDLE OpenProcess(int dwDesiredAccess, bool bInheritHandle, int dwProcessId);
+        protected static extern HANDLE OpenProcess(int dwDesiredAccess, bool bInheritHandle, uint dwProcessId);
         [DllImport("kernel32.dll")]
         protected static extern bool CloseHandle(HANDLE hObject);
         [DllImport("kernel32")]
