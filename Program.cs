@@ -14,11 +14,14 @@ namespace Auto{
             TaskManager manager = new TaskManager();
             manager.getProcessInfo();
             HWND hwnd = manager.getHwndFromCaption("제목 없음 - 메모장");
-            Console.WriteLine(hwnd);
-            manager.setForegroundWindow(hwnd);
-            // Auto auto = new Auto(@"C:\Users\Administrator\Desktop\target.PNG");
-            // if(auto.searchImg())
-            //     auto.oneClick();
+            //manager.setForegroundWindow(hwnd);
+            int pid = manager.getPidFromHwnd(hwnd);
+            //manager.processKill("notepad.exe");
+            manager.processKill(pid);
+            using (Auto auto = new Auto(@"C:\Users\Administrator\Desktop\target.PNG")){
+                if(auto.searchImg())
+                    auto.oneClick();
+            }
         }
     }
 }

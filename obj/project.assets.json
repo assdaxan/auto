@@ -1,12 +1,12 @@
 {
   "version": 3,
   "targets": {
-    ".NETFramework,Version=v4.6.1": {},
-    ".NETFramework,Version=v4.6.1/win7-x86": {}
+    ".NETFramework,Version=v4.7.2": {},
+    ".NETFramework,Version=v4.7.2/win7-x86": {}
   },
   "libraries": {},
   "projectFileDependencyGroups": {
-    ".NETFramework,Version=v4.6.1": []
+    ".NETFramework,Version=v4.7.2": []
   },
   "packageFolders": {
     "C:\\Users\\Administrator\\.nuget\\packages\\": {},
@@ -28,13 +28,13 @@
         "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
-        "net461"
+        "net472"
       ],
       "sources": {
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
-        "net461": {
+        "net472": {
           "projectReferences": {}
         }
       },
@@ -45,7 +45,7 @@
       }
     },
     "frameworks": {
-      "net461": {}
+      "net472": {}
     },
     "runtimes": {
       "win7-x86": {

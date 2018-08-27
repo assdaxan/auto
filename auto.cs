@@ -5,11 +5,16 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows;
 using System.Runtime.InteropServices;
+using Microsoft.Win32.SafeHandles;
+
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
 
 namespace Auto{
-    class Auto : WinApi{
+    class Auto : WinApi, IDisposable{
+        bool disposed = false;
+        SafeHandle handle = new SafeFileHandle(IntPtr.Zero, true);
+
         Bitmap targetImg;
         OpenCvSharp.Point minloc, maxloc;
         double minval, maxval = 0;
@@ -17,6 +22,22 @@ namespace Auto{
         
         public Auto(string path){
             loadImg(path);
+        }
+        ~Auto(){
+            this.Dispose();
+        }
+        public void Dispose(){ 
+            Dispose(true);
+            GC.SuppressFinalize(this);           
+        }
+        protected virtual void Dispose(bool disposing){
+            if (this.disposed)
+                return; 
+            if (disposing) {
+                this.targetImg.Dispose();
+                this.handle.Dispose();
+            }
+            this.disposed = true;
         }
         void loadImg(string path){
             try{

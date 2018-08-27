@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using System.Diagnostics;
 using System.Windows;
 using System.Runtime.InteropServices;
 
@@ -8,6 +9,21 @@ namespace Auto{
     using HANDLE = System.IntPtr;
     using HMODULE = System.IntPtr;
     class TaskManager : WinApi{
+        public void processKill(string name){
+            name = name.Split('.').GetValue(0) as string;
+            foreach(Process process in Process.GetProcessesByName(name) ){
+                process.Kill();
+            }
+        }
+        public void processKill(int pid){
+            if (pid != 0){
+                using (Process process = Process.GetProcessById(pid))
+                    process.Kill();
+            }
+            else{
+                Console.WriteLine("Not Found PrecessId");
+            }
+        }
         public void getProcessInfo(){
             // 테스트 코드
             // 시스템의 프로세스의 정보를 출력합니다.
@@ -21,7 +37,7 @@ namespace Auto{
             }
         }
         public HANDLE getHandleFromPid(uint pid){
-            // PID를 이용하여 핸들윈도우를 구합니다.
+            // PID를 이용하여 핸들을 구합니다.
             HANDLE handle = OpenProcess(PROCESS_ALL_ACCESS, false, pid);
             return handle;
         }
