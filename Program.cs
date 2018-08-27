@@ -11,17 +11,17 @@ namespace Auto{
     class Program{        
         static void Main(string[] args){
             Console.WriteLine("UBUN Image Auto");
-            TaskManager manager = new TaskManager();
-            manager.getProcessInfo();
-            HWND hwnd = manager.getHwndFromCaption("제목 없음 - 메모장");
+            //TaskManager manager = new TaskManager();
+            //manager.getProcessInfo();
+            //HWND hwnd = manager.getHwndFromCaption("제목 없음 - 메모장");
             //manager.setForegroundWindow(hwnd);
-            int pid = manager.getPidFromHwnd(hwnd);
+            //int pid = manager.getPidFromHwnd(hwnd);
             //manager.processKill("notepad.exe");
-            manager.processKill(pid);
-            using (Auto auto = new Auto(@"C:\Users\Administrator\Desktop\target.PNG")){
-                if(auto.searchImg())
-                    auto.oneClick();
-            }
+            // manager.processKill(pid);
+            // using (Auto auto = new Auto(@"C:\Users\Administrator\Desktop\target.PNG")){
+            //     if(auto.searchImg())
+            //         auto.oneClick();
+            // }
         }
     }
 }
