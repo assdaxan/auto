@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk"> 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net472</TargetFramework>
+      <OutputType>Exe</OutputType>
+      <TargetFramework>net472</TargetFramework>
+      <PostBuildEvent>copy "..\..\..\opencv\OpenCvSharpExtern.dll"</PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationFramework" />
