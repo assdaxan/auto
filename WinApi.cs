@@ -1,11 +1,11 @@
 using System;
 using System.Text;
 using System.Runtime.InteropServices;
-using HWND = System.IntPtr;
-using HANDLE = System.IntPtr;
-using HMODULE = System.IntPtr;
 
 namespace Auto{
+    using HWND = System.IntPtr;
+    using HANDLE = System.IntPtr;
+    using HMODULE = System.IntPtr;
     public class WinApi{
         // Win API 정의
         [DllImport("user32.dll")]
@@ -22,8 +22,12 @@ namespace Auto{
         protected static extern int GetWindowThreadProcessId(HWND hWnd, out int lpdwProcessId);
         [DllImport("user32.dll")]
         protected static extern HWND GetParent(HWND hWnd);
+        [DllImport("user32.dll")]
+        protected static extern bool SetForegroundWindow(HWND hWnd);
+
         [DllImport("psapi.dll")]
         protected static extern int GetModuleBaseName(HANDLE hProcess, HMODULE hModule, StringBuilder lpBaseName, int nSize);
+        
         [DllImport("kernel32.dll")]
         protected static extern HANDLE OpenProcess(int dwDesiredAccess, bool bInheritHandle, uint dwProcessId);
         [DllImport("kernel32.dll")]
